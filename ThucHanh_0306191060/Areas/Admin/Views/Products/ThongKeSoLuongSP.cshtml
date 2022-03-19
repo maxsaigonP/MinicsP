@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.InvoiceDetail>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<hr />
+<div class="container">
+    <form asp-action="ThongKeSoLuongSP">
+        <select name="idSP">
+
+            @foreach (var i in ViewBag.lstsp)
+            {
+                <option value="@i.Id">@i.Name</option>
+            }
+        </select>
+        <button type="submit">Thống kê</button>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Tên sản phẩm</td>
+                <td>Số lượng bán ra</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.Product.Name</td>
+                    <td>@i.Quantity</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Tổng số lượng bán ra :</td>
+                <td>@ViewBag.total</td>
+            </tr>
+
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,228 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.Cart>
+@{
+    @using Microsoft.AspNetCore.Http
+    }
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Hình ảnh</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Số lượng</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            
+            @foreach (var i in Model)
+            {
+            <tr>
+                <th scope="row">
+
+
+                    @(ViewBag.stt+=1)
+
+
+                </th>
+
+                <td>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="box">
+                            <div class="img-box">
+
+
+                            </div>
+                            <div class="detail-box">
+
+                                <input type="hidden" name="name" id="cartid" value="@i.Id" />
+                                <input type="hidden" name="name" id="product" value="@i.ProductId" />
+
+                                <h5 id="proID">
+                                    @i.Product.Name
+                                </h5>
+                                <div class="product_info">
+                                    <input type="hidden" name="name" id="price" value="@i.Product.Price" />
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <img src="~/images/product/@i.Product.Image" alt="Alternate Text" width="100"/>
+                </td>
+                <td>
+                    <h5>
+                        @i.Product.Price  <span>VND</span>
+                    </h5>
+                </td>
+
+                <td> <span id="sl">@i.Quantity</span> <button id="plus" class=" btn btn-primary fas fa-plus" idCart="@i.Id">&nbsp</button><button id="minus" class="btn btn-primary fas fa-minus" idCart="@i.Id"></button></td>
+                <td>
+                    <input type="hidden" id="btnxoa" value="@i.Id" />
+                    <a href="" userid="@Context.Session.GetString("userid")" id="xoa" idUser="@Context.Session.GetString("userid")">Huỷ</a>
+                </td>
+
+            </tr>
+            }
+
+
+        </tbody>
+    </table>
+    <div class="thanhToan">
+        <h2 class="total">Total : <span id="total">0 </span>VNĐ</h2>&nbsp
+        <button id="btn_pay" type="button" class="btn btn-primary ">Đặt hàng</button>
+    </div>
+</div>
+
+    @section css {
+
+        <link href="~/css/Cart.css" rel="stylesheet" /> 
+        <style>
+            .container {
+                min-height:30vh;
+            }
+        </style>
+
+    }
+    @section js{
+        <script>
+            var lst = document.querySelectorAll('#product');
+            var quan = document.querySelectorAll('#sl');
+            var price = document.querySelectorAll('#price');
+            var cart = document.querySelectorAll('#cartid');
+            var lstdel = document.querySelectorAll('#btnxoa');
+            var lstid = new Array;
+           
+        
+          
+            function addID(item, index) {
+                lstid.push(
+                    {
+                        id: lst[index].value,
+                        quantity: quan[index].innerHTML,
+                        price: price[index].value,
+                        cartid: cart[index].value
+                    }
+                );
+                
+            };
+           
+            lst.forEach(addID);
+    
+        
+            $('#btn_pay').click(function () {
+                
+                $.ajax({
+                method: "get",
+                    url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/pay")",
+                    data: { accountID: $('#xoa').attr('userid'), shippingPhone: @ViewBag.userphone, total: document.querySelector("#total").innerHTML, lst: JSON.stringify(lstid) }
+                }).done(function (msg) {
+                    alert(msg);
+                    location.reload();
+
+        });
+            });
+
+        </script>
+        <script>
+         
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/total")",
+                data: { accountID: $('#xoa').attr('userid') }
+                   }).done(function (msg) {
+                       document.querySelector("#total").innerHTML = msg.toString();
+
+        });
+        </script>
+        <script>
+      
+            var btnPlus = document.querySelectorAll('#plus');
+            var soLuong = document.querySelectorAll('#sl');
+            var lstidcart = document.querySelectorAll('#minus');
+
+            btnPlus.forEach((item, index) => item.addEventListener('click', () => {
+                var sl = soLuong[index].textContent;
+                 var a = Number(sl);
+            a++;
+                sl = a.toString();
+
+                soLuong[index].innerHTML = sl;
+
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/editcart")",
+                data: { cartID: lstdel[index].value, act: 0 }
+             }).done(function (msg) {
+
+                   $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/total")",
+                       data: { accountID: $('#xoa').attr('userid') }
+                   }).done(function (msg) {
+                       document.querySelector("#total").innerHTML = msg.toString();
+
+        });
+             });
+            }));
+    
+        var btnMinus = document.querySelectorAll('#minus');
+            var soLuong = document.querySelectorAll('#sl');
+
+            btnMinus.forEach((item, index) => item.addEventListener('click', () => {
+                var sl = soLuong[index].textContent;
+                 var a = Number(sl);
+            a--;
+                sl = a.toString();
+
+                soLuong[index].innerHTML = sl;
+
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/editcart")",
+                data: { cartID: lstdel[index].value, act: 1 }
+             }).done(function (msg) {
+
+                   $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/total")",
+                       data: { accountID: $('#xoa').attr('userid') }
+                   }).done(function (msg) {
+                       document.querySelector("#total").innerHTML = msg.toString();
+
+        });
+             });
+            }));
+        </script>
+        <script>
+            var lstdelete = document.querySelectorAll('#xoa');
+            
+            lstdelete.forEach((item, index) => item.addEventListener('click', () => {
+              
+                 $.ajax({
+                method: "get",
+                     url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/removecart")",
+                     data: { cartID: lstdel[index].value }
+             }).done(function () {
+               
+                 location.reload();
+            
+
+        });
+            }));
+      
+
+
+      
+        </script>
+
+    }

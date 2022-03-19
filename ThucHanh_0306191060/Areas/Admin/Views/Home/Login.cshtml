@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@{
+    Layout = "_LayoutLogin";
+}
+<div class="card-body px-5 py-5">
+    <h3 class="card-title text-left mb-3">Login</h3>
+    <hr>
+    <form asp-controller="Home" asp-action="login" method="post">
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control p_input text-light" autofocus>
+
+        </div>
+        <div class="form-group">
+            <label>Password *</label>
+            <input type="text" name="password" class="form-control p_input text-light">
+        </div>
+        <div class="form-group d-flex align-items-center justify-content-between">
+            
+            <a asp-action="DangKy" asp-controller="Home" asp-area="" class="forgot-pass">Đăng ký</a>
+        </div>
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary btn-block enter-btn" value="Login">
+        </div>
+    </form>
+</div>

@@ -1,0 +1,93 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h1>Đơn chờ duyệt</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IssuedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShippingAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShippingPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Account.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssuedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShippingAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShippingPhone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+                <td>
+                    <input  type="hidden" name="name" id="ivid" value="@item.Id" />
+                    <button class=" btn btn-outline-success" id="duyet">Duyệt</button>||
+                    <a asp-action="duyetdetail" asp-route-id="@item.Id" class="badge badge-outline-warning">Detail</a>||
+                    <a asp-action="DeleteIv" asp-route-id="@item.Id"  class="badge badge-outline-danger">Xoá</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts{
+    <script>
+
+        var a = document.querySelectorAll('#ivid');
+        var c = document.querySelectorAll('#duyet');
+
+        //$('#duyet').click(function () {
+        //    alert(a[0].value);
+        //});
+
+        c.forEach((item, index) => item.addEventListener('click', () => {
+            var b = a[index].value;
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/duyet")",
+                data: { ivID: b }
+            }).done(function (msg) {
+                alert(msg);
+                location.reload();
+
+        });
+        }));
+
+    </script>
+   
+}

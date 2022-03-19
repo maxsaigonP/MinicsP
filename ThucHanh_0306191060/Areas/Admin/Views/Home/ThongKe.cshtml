@@ -1,0 +1,12 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>Thống kê</h1>
+<div class="container">
+    <a asp-action="ThongKeDoanhThu" asp-controller="Invoices" class="badge badge-outline-success">Thống kê doanh thu theo ngày</a> <hr />
+    <a asp-action="ThongKeDoanhThuTheoSP" asp-controller="Invoices" class="badge badge-outline-warning">Thống kê doanh thu theo sản phẩm</a><hr />
+    <a asp-action="ThongKeSoLuongSP" asp-controller="Products" class="badge badge-outline-danger">Thống kê số lượng sản phẩm</a> <hr />
+    <a asp-action="ThongKeTop" asp-controller="Invoices" class="badge badge-outline-primary">Thống kê top sản phẩm bán chạy nhất</a>
+</div>

@@ -1,0 +1,86 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.Invoice>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Ngày đật
+                </th>
+                <th>
+                    Tổng hoá đơn
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Account.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IssuedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Total)
+                    </td>
+
+                    <td>
+                        <input type="hidden" name="name" id="ivid" value="@item.Id" />
+                        <input type="hidden" name="name" id="status" value="@(item.Status?"0":"1")" />
+                        <a asp-route-id="@item.Id" id="duyet" style="pointer-events: @(item.Status?"": "none")">@(item.Status? "Xác nhận đã nhận hàng":"Chờ duyệt")</a>||
+                        <a asp-route-id="@item.Id" id="xoa" style="pointer-events: @(item.Status?"none": "")">@(item.Status?"": "Huỷ")</a>
+                      
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section js{ 
+    <script>
+        var lstIvID = document.querySelectorAll('#ivid');
+        var lstDuyet = document.querySelectorAll('#duyet');
+        var lstHuy = document.querySelectorAll('#xoa');
+        var lstStatus = document.querySelectorAll('#status');
+        lstDuyet.forEach((item, index) => item.addEventListener('click', () => {
+            if (lstStatus[index].value == "0") {
+                $.ajax({
+                method: "get",
+                    url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/xacnhan")",
+                    data: { ivID: lstIvID[index].value, accountID: @ViewBag.userid }
+             }).done(function (msg) {
+                 alert(msg);
+                 
+
+             });
+                location.reload();
+            }
+        }));
+
+        lstHuy.forEach((item, index) => item.addEventListener('click', () => {
+    
+      
+                $.ajax({
+                method: "get",
+                    url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/removeinvoice")",
+                    data: { ivID: lstIvID[index].value }
+             }).done(function (msg) {
+                 alert("Thành công");
+                
+
+        });
+            location.reload();
+        }));
+    </script>
+}

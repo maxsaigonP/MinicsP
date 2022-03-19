@@ -1,0 +1,100 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@*@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.Invoice>*@
+@using PagedList.Mvc;
+@using PagedList;
+
+@model IPagedList<ThucHanh_0306191060.Areas.Admin.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Thong ke doanh thu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Thống kê doanh thu theo ngày</h1>
+<form asp-action="ThongKeDoanhThu">
+    Ngày bắt đầu: <input type="date" name="startDate" />
+    Ngày kết thúc: <input type="date" name="endDate" />
+    <button type="submit">Thống kê</button>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Code)*@ Code
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Account)*@ Account
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.IssuedDate)*@ IssuedDate
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.ShippingAddress)*@ ShippingAddress
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.ShippingPhone)*@ ShippingPhone
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Total)*@ Total
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Status)*@ Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ThucHanh_0306191060.Areas.Admin.Models.Invoice item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Account.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IssuedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShippingAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShippingPhone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Tổng doanh thu:</td>
+            <td>@ViewBag.total</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="page">
+    Trang :&nbsp
+    @for (int i = 0; i < Model.PageCount; i++)
+    {
+        <a asp-action="ThongKeDoanhThu" asp-route-id="@(i+1)">@(i+1)&nbsp&nbsp</a>
+
+
+    }
+</div>

@@ -1,0 +1,177 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ThucHanh_0306191060.Areas.Admin.Models.Product
+@{
+    @using Microsoft.AspNetCore.Http
+
+}
+<div class="container">
+    <div>
+        <hr />
+        <dl class="row">
+            <div class="col-5">
+
+                <input type="hidden" name="name" id="role" value="@Context.Session.GetString("role")" />
+                <img src="~/images/product/@Model.Image" style="width: 400px" alt="Alternate Text" />
+
+
+            </div>
+            <div class="col-4">
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-7">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-3">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Quantily)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Quantily)
+            </dd>
+            <dt class="col-sm-5">
+                @Html.DisplayNameFor(model => model.ProductType)
+            </dt>
+            <dd class="col-sm-7">
+                @Html.DisplayFor(model => model.ProductType.Name)
+            </dd>
+
+    </div>
+    <div class="col-3">
+        <div class="quantity">
+            Số lượng : <span id="sl">1</span> <button id="plus" class=" btn btn-primary fa fa-plus"></button><button id="minus" class="btn btn-primary fa fa-minus"></button>
+        </div>
+        <br />
+        <br />
+        <div class="dathang" id="userID" idUser="@Context.Session.GetString("userid")">
+            <button id="btn_addcart">
+                Add to cart
+            </button>
+        </div>
+    </div>
+
+
+    </dl>
+</div>
+
+        </div>
+
+<partial name="/Views/Shared/_CommentPartial.cshtml" />
+    </div>
+</div>
+</div>
+@section CSS {
+    <link href="bootstrap5-ecommerce/css/bootstrap.css?v=3.0" rel="stylesheet" type="text/css">
+    <link href="~/css/comment.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .quantity {
+            margin-top: 180px;
+            justify-content: center;
+        }
+
+        #sl {
+            font-weight: bold;
+            color: red;
+        }
+
+        .dathang button {
+            border: 3px solid;
+            border-color: red;
+            width: 210px;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px
+        }
+        #star {
+            color: yellow;
+            width: 30px;
+        }
+    </style>
+}
+
+@section js {
+    <script>
+        $('#btn_submit').click(function () {
+          
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/productapi/addcomment")",
+                data: { content: $('#content').val(), accountID: @ViewBag.userid, rating: document.querySelector('#rating').value, productID: document.querySelector('#productid').value }
+             }).done(function (msg) {
+                 alert(msg);
+                 location.reload();
+
+        });
+        });
+    </script>
+    <script>
+        var sl = document.querySelector("#sl").textContent;
+         $('#plus').click(function () {
+            var a = Number(sl);
+            a++;
+            sl = a.toString();
+            document.querySelector("#sl").innerHTML = sl;
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/editcart")",
+                data: { cartID: $('#plus').attr('idCart'), act: 0 }
+             }).done(function (msg) {
+             });
+
+
+        });
+    </script>
+    <script>
+        var sl = document.querySelector("#sl").textContent;
+         $('#minus').click(function () {
+            var a = Number(sl);
+            a--;
+            sl = a.toString();
+            document.querySelector("#sl").innerHTML = sl;
+            $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/editcart")",
+                data: { cartID: $('#minus').attr('idCart'), act: 1 }
+             }).done(function (msg) {
+
+
+        });
+        });
+    </script>
+    <script>
+        var as = document.querySelector('#role').value;
+        $('#btn_addcart').click(function () {
+           
+
+            if (document.querySelector('#role').value != '') {
+                 $.ajax({
+                method: "get",
+                 url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/addcart")",
+                 data: { accountID: $('#userID').attr('idUser'), productID: @Model.Id, soLuong: document.querySelector('#sl').innerHTML }
+            }).done(function (msg) {
+                alert(msg)
+
+        });
+            }
+
+
+
+        });
+    </script>
+}

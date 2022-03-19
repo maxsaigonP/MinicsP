@@ -1,0 +1,124 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<ThucHanh_0306191060.Areas.Admin.Models.Product>
+@{
+    @using Microsoft.AspNetCore.Http
+
+}
+
+<section class="product_section layout_padding">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                Our Products
+            </h2><br />
+            <div class="search">
+                <a asp-action="Search" class="heading_container heading_center fa fa-search">Tìm kiếm</a>
+            </div>
+        </div>
+        
+        <input type="hidden" name="name" id="role" value="@Context.Session.GetString("role")" />
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-sm-6 col-lg-4">
+                    <div class="box">
+                        <div class="img-box">
+                            <img src="~/./images/product/@item.Image" alt="">
+                            <a href="" class="add_cart_btn" id="addCart" name="addCart" idSP="@(item.Id)">
+                                <input type="hidden" name="name" id="idSP1" value="@(item.Id)" />
+                                <span>
+                                    Add To Cart
+                                </span>
+                            </a>
+
+                        </div>
+                        <div class="detail-box" id="userID" idUser="@Context.Session.GetString("userid")">
+                            <div>
+                                <h5>
+                                    @item.Name
+                                </h5>
+                                <a asp-action="ProductDetail" asp-route-id="@item.Id">See details</a>
+                            </div>
+                            <div class="product_info">
+                                <h5>
+                                    <span>VND</span> @item.Price
+                                </h5>
+                            
+                                @*<div class="star_container">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="btn_box">
+        <a href="" class="view_more-link">
+            View More
+        </a>
+    </div>
+
+</section>
+@section js{
+
+  
+    <script>
+        var btnPlus = document.querySelectorAll('#addCart');
+
+        var soLuong = document.querySelectorAll('#idSP1');
+
+
+            btnPlus.forEach((item, index) => item.addEventListener('click', () => {
+            //    var sl = soLuong[index].textContent;
+            //     var a = Number(sl);
+            //a++;
+            //    sl = a.toString();
+
+                //    soLuong[index].innerHTML = sl;
+
+                var a = index;
+                console.log(soLuong[index].value)
+                var q = soLuong[index].value;
+
+              
+                if (document.querySelector('#role').value!='') {
+                $.ajax({
+                method: "get",
+                url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/addcart")",
+                data: { accountID: $('#userID').attr('idUser'), productID: q, soLuong: 1 }
+            }).done(function (msg) {
+                alert(msg)
+
+        });
+                }
+
+            }));
+    @*$('#addCart').click(function () {
+
+             $.ajax({
+                method: "get",
+                 url: "@((Context.Request.IsHttps?"https://":"http://")+Context.Request.Host+"/api/cart/addcart")",
+                 data: { accountID: $('#userID').attr('idUser'), productID: $(this).attr('idSP') }
+             }).done(function (msg) {
+                 alert(msg);
+
+        });
+
+
+        });*@
+    </script>
+
+
+}
